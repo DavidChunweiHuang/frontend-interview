@@ -1,0 +1,22 @@
+@use "./variables.scss" as vars;
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    width: 100%;
+    // max-width: 375px;
+    // height: 860px;
+    margin: 0 auto;
+    overflow-y: auto;
+
+    @include vars.respond-to(large) {
+        max-width: 1440px;
+        height: auto;
+    }
+}

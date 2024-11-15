@@ -1,0 +1,18 @@
+// 定義常見的斷點變數
+$breakpoints: (
+    small: 375px,
+    large: 1440px,
+);
+
+// 混入函數，用於添加不同尺寸的響應式樣式
+@mixin respond-to($breakpoint) {
+    @if map-has-key($breakpoints, $breakpoint) {
+        @media (min-width: map-get($breakpoints, $breakpoint)) {
+            @content;
+        }
+    }
+
+    @else {
+        @warn "The breakpoint '#{$breakpoint}' is not defined in the \$breakpoints map.";
+    }
+}
