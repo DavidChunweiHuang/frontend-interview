@@ -3,12 +3,19 @@
   <div class="app" ref="appContainer">
     <AdBanner />
     <Header :isNavbarVisible="isNavbarVisible" />
-    <div class="content">
-      <Article v-if="isLargeScreen" />
+    <div class="content" v-for="(article, index) in articles" :key="index">
+      <Article
+        v-if="isLargeScreen"
+        :description="article.description"
+        :url="article.url"
+      />
       <Carousel />
-      <Article v-if="!isLargeScreen" />
+      <Article
+        v-if="!isLargeScreen"
+        :description="article.description"
+        :url="article.url"
+      />
     </div>
-    <Content />
   </div>
 </template>
 
@@ -17,7 +24,7 @@ import AdBanner from "./components/AdBanner.vue";
 import Header from "./components/Header.vue";
 import Carousel from "./components/SlideShow.vue";
 import Article from "./components/Article.vue";
-import Content from "./components/Content.vue";
+// import Content from "./components/Content.vue";
 
 export default {
   name: "App",
@@ -26,13 +33,14 @@ export default {
     Header,
     Carousel,
     Article,
-    Content,
+    // Content,
   },
   data() {
     return {
       isNavbarVisible: true,
       lastScrollTop: 0,
       isLargeScreen: window.innerWidth >= 1440,
+      articles: [],
     };
   },
   methods: {
@@ -52,10 +60,34 @@ export default {
       }
       this.lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // 確保不會小於 0
     },
+    async fetchNewsSources() {
+      const apiKey = "c13b03b3cc694fa68e851b3df42f1346";
+      const apiURL = `https://newsapi.org/v2/top-headlines/sources?apiKey=${apiKey}&country=ca`;
+
+      try {
+        // 發送 request
+        const response = await fetch(apiURL);
+
+        // confirm response
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // 解析 json
+        const data = await response.json();
+        this.articles = data.sources.map((source) => ({
+          description: source.description,
+          url: source.url,
+        }));
+      } catch (error) {
+        console.error("Failed to fetch news sources:", error);
+      }
+    },
   },
   mounted() {
     // window.addEventListener("scroll", this.handleScroll);
     this.$refs.appContainer.addEventListener("scroll", this.handleScroll);
+    this.fetchNewsSources(); // 在載時發送 API
   },
   beforeDestroy() {
     // window.removeEventListener("scroll", this.handleScroll);
@@ -92,7 +124,7 @@ export default {
       margin-top: 64px;
       flex-direction: row;
       justify-content: space-between;
-      align-items: end;
+      align-items: center;
       gap: 45px;
     }
   }

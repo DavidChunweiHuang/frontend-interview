@@ -6,12 +6,12 @@
     </div>
     <div class="upper-area">
       <p class="article-title">
-        疫情期間，癌症化療病人尿不出來又怕掛急診染疫，怎麼辦？
+        {{ description }}
       </p>
     </div>
 
     <div class="bottom-area">
-      <button class="read-more">立即閱讀</button>
+      <a :href="url" target="_blank" class="read-more">立即閱讀</a>
     </div>
   </div>
 </template>
@@ -19,6 +19,16 @@
 <script>
 export default {
   name: "Article",
+  props: {
+    description: {
+      type: String,
+      required: true,
+    },
+    url: {
+      type: String,
+      required: true,
+    },
+  },
 };
 </script>
 
@@ -27,11 +37,14 @@ export default {
 .article {
   position: relative;
   width: 327px;
-  height: 126px;
+  //   height: 126px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 
   @include vars.respond-to(large) {
     width: 412px;
-    height: 327px;
+    // height: 327px;
   }
 
   .tags {
