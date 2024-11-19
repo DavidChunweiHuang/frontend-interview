@@ -1,32 +1,32 @@
 <template>
-  <div class="article">
+  <div class="article" v-if="currentArticle">
     <div class="tags">
       <span>#不分癌</span>
       <span>#常見治療問題</span>
     </div>
     <div class="upper-area">
       <p class="article-title">
-        {{ description }}
+        {{ currentArticle.description }}
       </p>
     </div>
 
     <div class="bottom-area">
-      <a :href="url" target="_blank" class="read-more">立即閱讀</a>
+      <a :href="currentArticle.url" target="_blank" class="read-more"
+        >立即閱讀</a
+      >
     </div>
   </div>
+  <div v-else class="loading">載入中...</div>
 </template>
 
 <script>
 export default {
   name: "Article",
   props: {
-    description: {
-      type: String,
+    currentArticle: {
+      type: Object,
       required: true,
-    },
-    url: {
-      type: String,
-      required: true,
+      default: null,
     },
   },
 };

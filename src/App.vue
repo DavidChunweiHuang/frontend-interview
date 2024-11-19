@@ -3,19 +3,17 @@
   <div class="app" ref="appContainer">
     <AdBanner />
     <Header :isNavbarVisible="isNavbarVisible" />
-    <div class="content" v-for="(article, index) in articles" :key="index">
-      <Article
-        v-if="isLargeScreen"
-        :description="article.description"
-        :url="article.url"
+
+    <div class="content" v-if="articles.length > 0">
+      <Article v-if="isLargeScreen" :currentArticle="articles[currentIndex]" />
+      <Carousel
+        :articles="articles"
+        :activeIndex="currentIndex"
+        @update-index="updateIndex"
       />
-      <Carousel />
-      <Article
-        v-if="!isLargeScreen"
-        :description="article.description"
-        :url="article.url"
-      />
+      <Article v-if="!isLargeScreen" :currentArticle="articles[currentIndex]" />
     </div>
+    <div v-else class="loading">資料載入中...</div>
   </div>
 </template>
 
@@ -33,7 +31,6 @@ export default {
     Header,
     Carousel,
     Article,
-    // Content,
   },
   data() {
     return {
@@ -41,6 +38,7 @@ export default {
       lastScrollTop: 0,
       isLargeScreen: window.innerWidth >= 1440,
       articles: [],
+      currentIndex: 0,
     };
   },
   methods: {
@@ -81,6 +79,11 @@ export default {
         }));
       } catch (error) {
         console.error("Failed to fetch news sources:", error);
+      }
+    },
+    updateIndex(newIndex) {
+      if (newIndex >= 0 && newIndex < this.articles.length) {
+        this.currentIndex = newIndex;
       }
     },
   },
